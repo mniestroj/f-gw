@@ -17,6 +17,7 @@
 
 #include "b_generator.h"
 #include "common.h"
+#include "r_generator.h"
 
 #define DEVICE_NAME		CONFIG_BLUETOOTH_DEVICE_NAME
 #define DEVICE_NAME_LEN		(sizeof(DEVICE_NAME) - 1)
@@ -123,22 +124,6 @@ static void bt_ready(int err)
 
 K_MSGQ_DEFINE(event_queue, sizeof(struct event), 100, 4);
 
-static void generate_event(struct k_timer *timer)
-{
-	static u32_t counter = 0;
-	struct event event = {
-		.sensor_addr = 0xA0 + (counter % 16),
-		.timestamp = k_uptime_get(),
-		.event_type = 1 + (counter % 3),
-		.event_data = 0,
-	};
-	counter++;
-
-	while (k_msgq_put(&event_queue, &event, K_NO_WAIT) != 0)
-		k_msgq_purge(&event_queue);
-}
-K_TIMER_DEFINE(event_generation_timer, generate_event, NULL);
-
 static void button_event(void)
 {
 	static u32_t counter = 0;
@@ -152,15 +137,6 @@ static void button_event(void)
 
 	while (k_msgq_put(&event_queue, &event, K_NO_WAIT) != 0)
 		k_msgq_purge(&event_queue);
-}
-
-static void toggle_event_generation(void)
-{
-	if (k_timer_remaining_get(&event_generation_timer))
-		k_timer_stop(&event_generation_timer);
-	else
-		k_timer_start(&event_generation_timer,
-			K_MSEC(1000), K_MSEC(1000));
 }
 
 static void button_pressed(struct device *gpio, struct gpio_callback *cb,
@@ -177,7 +153,7 @@ static void button_pressed(struct device *gpio, struct gpio_callback *cb,
 		button_event();
 
 	if (pins & BIT(SW1_GPIO_PIN))
-		toggle_event_generation();
+		toggle_r_generation();
 
 	if (pins & BIT(SW2_GPIO_PIN))
 		toggle_b_generation();
@@ -223,7 +199,8 @@ void main(void)
 
 	init_buttons();
 
-	k_timer_start(&event_generation_timer, K_MSEC(1000), K_MSEC(1000));
+	/* Enable r_generator by default */
+	toggle_r_generation();
 
 	err = bt_enable(bt_ready);
 	if (err) {
