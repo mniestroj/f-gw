@@ -10,3 +10,6 @@ struct event {
 } __packed;
 
 extern struct k_msgq event_queue;
+
+extern void ble_main(void *, void *, void *);
+extern void nrf_main(void *, void *, void *);
