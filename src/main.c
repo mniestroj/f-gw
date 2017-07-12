@@ -193,6 +193,14 @@ static void init_buttons(void)
 	gpio_pin_enable_callback(gpio, SW3_GPIO_PIN);
 }
 
+#define NRF_STACK_SIZE	500
+#define NRF_PRIORITY	1
+extern void nrf_main(void *, void *, void *);
+
+K_THREAD_DEFINE(nrf_tid, NRF_STACK_SIZE,
+		nrf_main, NULL, NULL, NULL,
+		NRF_PRIORITY, 0, K_NO_WAIT);
+
 void main(void)
 {
 	int err;
