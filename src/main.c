@@ -15,14 +15,12 @@
 
 static void button_event(void)
 {
-	static u32_t counter = 0;
 	struct event event = {
 		.sensor_addr = 0x00,
 		.timestamp = k_uptime_get(),
 		.event_type = 1,
 		.event_data = 0,
 	};
-	counter++;
 
 	while (k_msgq_put(&event_queue, &event, K_NO_WAIT) != 0)
 		k_msgq_purge(&event_queue);
