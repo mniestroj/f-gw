@@ -84,8 +84,15 @@ static void dump_payload(int pipe, uint8_t *payload, unsigned int len)
 
 	switch (header->type) {
 	CASE_MSG_TYPE(PWR_ON);
-	CASE_MSG_TYPE(IR_ON);
-	CASE_MSG_TYPE(IR_OFF);
+	case MSG_IR_ONOFF: {
+		uint32_t value = ((((uint32_t) payload[MSG_HEADER_LEN + 0]) << 0) |
+				(((uint32_t) payload[MSG_HEADER_LEN + 1]) << 8) |
+				(((uint32_t) payload[MSG_HEADER_LEN + 2]) << 16) |
+				(((uint32_t) payload[MSG_HEADER_LEN + 3]) << 24));
+		printk("IR_ONOFF %u", (unsigned int) value);
+		break;
+	}
+	CASE_MSG_TYPE(IR_USR);
 	case MSG_MAG_ONOFF: {
 		uint32_t value = ((((uint32_t) payload[MSG_HEADER_LEN + 0]) << 0) |
 				(((uint32_t) payload[MSG_HEADER_LEN + 1]) << 8) |
