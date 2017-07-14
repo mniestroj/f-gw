@@ -4,6 +4,7 @@
 #include <device.h>
 #include <spi.h>
 
+#include "common.h"
 #include "nrf24.h"
 #include "msg.h"
 
@@ -70,6 +71,20 @@ static void nrf24_local_init(struct nrf24 *nrf)
 	nrf24_set_byte(nrf, NRF24_STATUS, NRF24_RX_DR);
 }
 
+static void send_event(uint32_t sensor_addr, uint32_t timestamp,
+		uint32_t event_type, uint32_t event_data)
+{
+	struct event event = {
+		.sensor_addr = sensor_addr,
+		.timestamp = timestamp,
+		.event_type = event_type,
+		.event_data = event_data,
+	};
+
+	while (k_msgq_put(&event_queue, &event, K_NO_WAIT) != 0)
+		k_msgq_purge(&event_queue);
+}
+
 static void dump_payload(int pipe, uint8_t *payload, unsigned int len)
 {
 	struct msg_header *header = (struct msg_header *) payload;
@@ -90,6 +105,8 @@ static void dump_payload(int pipe, uint8_t *payload, unsigned int len)
 				(((uint32_t) payload[MSG_HEADER_LEN + 2]) << 16) |
 				(((uint32_t) payload[MSG_HEADER_LEN + 3]) << 24));
 		printk("IR_ONOFF %u", (unsigned int) value);
+		send_event(2, k_uptime_get() - header->ts,
+			header->type, value);
 		break;
 	}
 	CASE_MSG_TYPE(IR_USR);
@@ -99,6 +116,8 @@ static void dump_payload(int pipe, uint8_t *payload, unsigned int len)
 				(((uint32_t) payload[MSG_HEADER_LEN + 2]) << 16) |
 				(((uint32_t) payload[MSG_HEADER_LEN + 3]) << 24));
 		printk("MAG_ONOFF %u", (unsigned int) value);
+		send_event(1, k_uptime_get() - header->ts,
+			header->type, value);
 		break;
 	}
 	case MSG_MAG_RAW: {
