@@ -95,7 +95,4 @@ K_THREAD_DEFINE(nrf_tid, NRF_STACK_SIZE,
 void main(void)
 {
 	init_buttons();
-
-	/* Enable r_generator by default */
-	toggle_r_generation();
 }
