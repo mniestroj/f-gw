@@ -65,8 +65,8 @@ uint8_t nrf24_get_byte(struct nrf24 *nrf, uint8_t reg)
 	uint8_t data_in[2];
 
 	nrf24_cs(nrf, 0);
-        spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-                       data_in, ARRAY_SIZE(data_in));
+	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
+		       data_in, ARRAY_SIZE(data_in));
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
@@ -79,8 +79,8 @@ void nrf24_set_byte(struct nrf24 *nrf, uint8_t reg, uint8_t val)
 	uint8_t data_in[1];
 
 	nrf24_cs(nrf, 0);
-        spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-                       data_in, ARRAY_SIZE(data_in));
+	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
+		       data_in, ARRAY_SIZE(data_in));
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
@@ -99,8 +99,8 @@ void nrf24_set_rx_address(struct nrf24 *nrf, uint8_t pipe, uint64_t address)
 	uint8_t data_in[1];
 
 	nrf24_cs(nrf, 0);
-        spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-                       data_in, ARRAY_SIZE(data_in));
+	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
+		       data_in, ARRAY_SIZE(data_in));
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
@@ -112,8 +112,8 @@ uint64_t nrf24_get_rx_address(struct nrf24 *nrf, uint8_t pipe)
 	uint8_t data_in[6];
 
 	nrf24_cs(nrf, 0);
-        spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-                       data_in, ARRAY_SIZE(data_in));
+	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
+		       data_in, ARRAY_SIZE(data_in));
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
@@ -138,8 +138,8 @@ void nrf24_set_tx_address(struct nrf24 *nrf, uint64_t address)
 	uint8_t data_in[1];
 
 	nrf24_cs(nrf, 0);
-        spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-                       data_in, ARRAY_SIZE(data_in));
+	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
+		       data_in, ARRAY_SIZE(data_in));
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
@@ -151,8 +151,8 @@ uint64_t nrf24_get_tx_address(struct nrf24 *nrf)
 	uint8_t data_in[6];
 
 	nrf24_cs(nrf, 0);
-        spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-                       data_in, ARRAY_SIZE(data_in));
+	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
+		       data_in, ARRAY_SIZE(data_in));
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
@@ -170,8 +170,8 @@ void nrf24_flush_tx(struct nrf24 *nrf)
 	uint8_t data_in[1];
 
 	nrf24_cs(nrf, 0);
-        spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-                       data_in, ARRAY_SIZE(data_in));
+	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
+		       data_in, ARRAY_SIZE(data_in));
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
@@ -183,8 +183,8 @@ void nrf24_flush_rx(struct nrf24 *nrf)
 	uint8_t data_in[1];
 
 	nrf24_cs(nrf, 0);
-        spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-                       data_in, ARRAY_SIZE(data_in));
+	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
+		       data_in, ARRAY_SIZE(data_in));
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
