@@ -86,6 +86,18 @@ void nrf24_set_byte(struct nrf24 *nrf, uint8_t reg, uint8_t val)
 	nrf->status = data_in[0];
 }
 
+void nrf24_enable_aa(struct nrf24 *nrf, uint8_t pipes)
+{
+	nrf24_set_byte(nrf, NRF24_EN_AA,
+		nrf24_get_byte(nrf, NRF24_EN_AA) | pipes);
+}
+
+void nrf24_enable_rx_address(struct nrf24 *nrf, uint8_t pipes)
+{
+	nrf24_set_byte(nrf, NRF24_EN_RXADDR,
+		nrf24_get_byte(nrf, NRF24_EN_RXADDR) | pipes);
+}
+
 void nrf24_set_rx_address(struct nrf24 *nrf, uint8_t pipe, uint64_t address)
 {
 	uint8_t data_out[] = {

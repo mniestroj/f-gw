@@ -129,6 +129,8 @@ static inline int nrf24_irq(struct nrf24 *nrf)
 uint8_t nrf24_get_byte(struct nrf24 *nrf, uint8_t reg);
 void nrf24_set_byte(struct nrf24 *nrf, uint8_t reg, uint8_t val);
 
+void nrf24_enable_aa(struct nrf24 *nrf, uint8_t pipes);
+void nrf24_enable_rx_address(struct nrf24 *nrf, uint8_t pipe);
 void nrf24_set_rx_address(struct nrf24 *nrf, uint8_t pipe, uint64_t address);
 uint64_t nrf24_get_rx_address(struct nrf24 *nrf, uint8_t pipe);
 void nrf24_set_tx_address(struct nrf24 *nrf, uint64_t address);
