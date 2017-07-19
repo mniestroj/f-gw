@@ -53,6 +53,19 @@ static struct nrf24_config nrf_config = {
 
 static struct nrf24 nrf;
 
+#ifdef VERBOSE_DEBUG
+static void nrf_print_addr(unsigned int pipe, uint64_t addr)
+{
+	vprintk("a%u: %02x%02x%02x%02x%02x\n",
+		pipe,
+		(unsigned int) ((addr >> 0) & 0xFF),
+		(unsigned int) ((addr >> 8) & 0xFF),
+		(unsigned int) ((addr >> 16) & 0xFF),
+		(unsigned int) ((addr >> 24) & 0xFF),
+		(unsigned int) ((addr >> 32) & 0xFF));
+}
+#endif
+
 static void nrf24_local_init(struct nrf24 *nrf)
 {
 	uint8_t val;
@@ -62,13 +75,29 @@ static void nrf24_local_init(struct nrf24 *nrf)
 	/* RF Speed and power*/
 	nrf24_set_byte(nrf, NRF24_RF_SETUP, NRF24_RF_DR_250K | NRF24_RF_PWR_M6);
 
-	/* Address */
-	nrf24_set_rx_address(nrf, 0, 0x0102030405);
-
 	/* Set to RX mode */
 	val = nrf24_get_byte(nrf, NRF24_CONFIG);
 	nrf24_set_byte(nrf, NRF24_CONFIG, val | NRF24_PRIM_RX);
 	nrf24_set_byte(nrf, NRF24_STATUS, NRF24_RX_DR);
+
+	/* Address */
+	nrf24_enable_rx_address(nrf,
+				BIT(0) | BIT(1) | BIT(2) |
+				BIT(3) | BIT(4) | BIT(5));
+	nrf24_enable_aa(nrf,
+			BIT(0) | BIT(1) | BIT(2) |
+			BIT(3) | BIT(4) | BIT(5));
+	nrf24_set_rx_address(nrf, 0, 0xABABABA001);
+	nrf24_set_rx_address(nrf, 1, 0xABABABA002);
+	nrf24_set_rx_address(nrf, 2, 0x03);
+	nrf24_set_rx_address(nrf, 3, 0x04);
+	nrf24_set_rx_address(nrf, 4, 0x05);
+	nrf24_set_rx_address(nrf, 5, 0x06);
+
+#if VERBOSE_DEBUG
+	nrf_print_addr(0, nrf24_get_rx_address(nrf, 0));
+	nrf_print_addr(1, nrf24_get_rx_address(nrf, 1));
+#endif
 }
 
 static void send_event(uint32_t sensor_addr, uint32_t timestamp,
