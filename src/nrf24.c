@@ -122,19 +122,23 @@ uint64_t nrf24_get_rx_address(struct nrf24 *nrf, uint8_t pipe)
 {
 	uint8_t data_out[] = { NRF24_RX_ADDR_P0 + pipe };
 	uint8_t data_in[6];
+	uint8_t data_in_len = pipe < 2 ? ARRAY_SIZE(data_in) : 2;
 
 	nrf24_cs(nrf, 0);
 	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-		       data_in, ARRAY_SIZE(data_in));
+		       data_in, data_in_len);
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
 
-	return ((((uint64_t) data_in[1]) <<  0) |
-		(((uint64_t) data_in[2]) <<  8) |
-		(((uint64_t) data_in[3]) << 16) |
-		(((uint64_t) data_in[4]) << 24) |
-		(((uint64_t) data_in[5]) << 32));
+	if (pipe < 2)
+		return ((((uint64_t) data_in[1]) <<  0) |
+			(((uint64_t) data_in[2]) <<  8) |
+			(((uint64_t) data_in[3]) << 16) |
+			(((uint64_t) data_in[4]) << 24) |
+			(((uint64_t) data_in[5]) << 32));
+	else
+		return data_in[1];
 }
 
 void nrf24_set_tx_address(struct nrf24 *nrf, uint64_t address)
