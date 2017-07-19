@@ -87,6 +87,7 @@ static void nrf24_local_init(struct nrf24 *nrf)
 	nrf24_enable_aa(nrf,
 			BIT(0) | BIT(1) | BIT(2) |
 			BIT(3) | BIT(4) | BIT(5));
+	nrf24_set_address_width(nrf, 3);
 	nrf24_set_rx_address(nrf, 0, 0xABABABA001);
 	nrf24_set_rx_address(nrf, 1, 0xABABABA002);
 	nrf24_set_rx_address(nrf, 2, 0x03);
