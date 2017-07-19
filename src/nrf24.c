@@ -76,7 +76,8 @@ uint8_t nrf24_get_byte(struct nrf24 *nrf, uint8_t reg)
 void nrf24_set_byte(struct nrf24 *nrf, uint8_t reg, uint8_t val)
 {
 	uint8_t data_out[] = { reg | NRF24_W_REGISTER, val };
-	uint8_t data_in[1];
+	/* Workaround for short output transfer */
+	uint8_t data_in[ARRAY_SIZE(data_out)];
 
 	nrf24_cs(nrf, 0);
 	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
@@ -108,11 +109,14 @@ void nrf24_set_rx_address(struct nrf24 *nrf, uint8_t pipe, uint64_t address)
 		(address >> 24) & 0xFF,
 		(address >> 32) & 0xFF,
 	};
-	uint8_t data_in[1];
+	/* Workaround for short output transfer */
+	uint8_t data_in[ARRAY_SIZE(data_out)];
+	uint8_t data_out_len = (pipe < 2) ? ARRAY_SIZE(data_out) : 2;
 
 	nrf24_cs(nrf, 0);
-	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
-		       data_in, ARRAY_SIZE(data_in));
+	spi_transceive(nrf->spi_dev,
+		data_out, data_out_len,
+		data_in, data_out_len);
 	nrf24_cs(nrf, 1);
 
 	nrf->status = data_in[0];
@@ -151,7 +155,8 @@ void nrf24_set_tx_address(struct nrf24 *nrf, uint64_t address)
 		(address >> 24) & 0xFF,
 		(address >> 32) & 0xFF,
 	};
-	uint8_t data_in[1];
+	/* Workaround for short output transfer */
+	uint8_t data_in[ARRAY_SIZE(data_out)];
 
 	nrf24_cs(nrf, 0);
 	spi_transceive(nrf->spi_dev, data_out, ARRAY_SIZE(data_out),
@@ -210,7 +215,8 @@ void nrf24_send(struct nrf24 *nrf, uint8_t *data, uint8_t size)
 {
 	uint8_t data_out[33] = { NRF24_W_TX_PAYLOAD };
 	unsigned payload_size = nrf->config->payload_size;
-	uint8_t status;
+	/* Workaround for short output transfer */
+	uint8_t data_in[ARRAY_SIZE(data_out)];
 	uint8_t i;
 
 	if (!payload_size)
@@ -221,10 +227,10 @@ void nrf24_send(struct nrf24 *nrf, uint8_t *data, uint8_t size)
 
 	nrf24_cs(nrf, 0);
 	spi_transceive(nrf->spi_dev, data_out, payload_size + 1,
-		       &status, 1);
+		       data_in, payload_size + 1);
 	nrf24_cs(nrf, 1);
 
-	nrf->status = status;
+	nrf->status = data_in[0];
 }
 
 int nrf24_receive(struct nrf24 *nrf, uint8_t *data)
