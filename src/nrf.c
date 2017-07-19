@@ -210,6 +210,7 @@ void nrf_main(void *p1, void *p2, void *p3)
 		vprintk("Waiting for data\n");
 		while (!nrf_ready)
 			k_sem_take(&nrf_ready_sem, K_FOREVER);
+		nrf_ready = 0;
 		vprintk("There was an IRQ!\n");
 
 		status = nrf24_status(&nrf);
