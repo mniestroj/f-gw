@@ -135,6 +135,7 @@ void nrf24_set_rx_address(struct nrf24 *nrf, uint8_t pipe, uint64_t address);
 uint64_t nrf24_get_rx_address(struct nrf24 *nrf, uint8_t pipe);
 void nrf24_set_tx_address(struct nrf24 *nrf, uint64_t address);
 uint64_t nrf24_get_tx_address(struct nrf24 *nrf);
+void nrf24_set_address_width(struct nrf24 *nrf, uint8_t width);
 
 void nrf24_flush_tx(struct nrf24 *nrf);
 void nrf24_flush_rx(struct nrf24 *nrf);

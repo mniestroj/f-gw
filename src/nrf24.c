@@ -185,6 +185,11 @@ uint64_t nrf24_get_tx_address(struct nrf24 *nrf)
 		(((uint64_t) data_in[5]) << 32));
 }
 
+void nrf24_set_address_width(struct nrf24 *nrf, uint8_t width)
+{
+	nrf24_set_byte(nrf, NRF24_SETUP_AW, width + 2);
+}
+
 void nrf24_flush_tx(struct nrf24 *nrf)
 {
 	uint8_t data_out[] = { NRF24_FLUSH_TX };
