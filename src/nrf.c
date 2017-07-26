@@ -135,7 +135,7 @@ static void dump_payload(int pipe, uint8_t *payload, unsigned int len)
 				(((uint32_t) payload[MSG_HEADER_LEN + 2]) << 16) |
 				(((uint32_t) payload[MSG_HEADER_LEN + 3]) << 24));
 		printk("IR_ONOFF %u", (unsigned int) value);
-		send_event(2, k_uptime_get() - header->ts,
+		send_event(pipe + 1, k_uptime_get() - header->ts,
 			header->type, value);
 		break;
 	}
@@ -146,7 +146,7 @@ static void dump_payload(int pipe, uint8_t *payload, unsigned int len)
 				(((uint32_t) payload[MSG_HEADER_LEN + 2]) << 16) |
 				(((uint32_t) payload[MSG_HEADER_LEN + 3]) << 24));
 		printk("MAG_ONOFF %u", (unsigned int) value);
-		send_event(1, k_uptime_get() - header->ts,
+		send_event(pipe + 1, k_uptime_get() - header->ts,
 			header->type, value);
 		break;
 	}
