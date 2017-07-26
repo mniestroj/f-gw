@@ -43,6 +43,21 @@ static const struct bt_uuid_128 event_chr_uuid = BT_UUID_INIT_128(
 	0xf1, 0xee, 0xbc, 0x9a, 0x78, 0x56, 0x34, 0x13,
 	0x78, 0x56, 0x34, 0x12, 0x78, 0x56, 0x34, 0x13);
 
+static ssize_t read_time(struct bt_conn *conn, const struct bt_gatt_attr *attr,
+			void *buf, u16_t len, u16_t offset)
+{
+	static u32_t current_time;
+
+	current_time = k_uptime_get();
+
+	return bt_gatt_attr_read(conn, attr, buf, len, offset, &current_time,
+				sizeof(current_time));
+}
+
+static const struct bt_uuid_128 uptime_chr_uuid = BT_UUID_INIT_128(
+	0xf2, 0xee, 0xbc, 0x9a, 0x78, 0x56, 0x34, 0x13,
+	0x78, 0x56, 0x34, 0x12, 0x78, 0x56, 0x34, 0x13);
+
 static struct bt_gatt_attr event_attrs[] = {
 	BT_GATT_PRIMARY_SERVICE(&event_uuid),
 	BT_GATT_CHARACTERISTIC(&event_chr_uuid.uuid,
@@ -51,6 +66,11 @@ static struct bt_gatt_attr event_attrs[] = {
 			BT_GATT_PERM_NONE,
 			NULL, NULL, NULL),
 	BT_GATT_CCC(event_ccc_cfg, event_ccc_cfg_changed),
+	BT_GATT_CHARACTERISTIC(&uptime_chr_uuid.uuid,
+			BT_GATT_CHRC_READ),
+	BT_GATT_DESCRIPTOR(&uptime_chr_uuid.uuid,
+			BT_GATT_PERM_READ,
+			read_time, NULL, NULL),
 };
 
 static const struct bt_data ad[] = {
