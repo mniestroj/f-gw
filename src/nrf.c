@@ -73,7 +73,7 @@ static void nrf24_local_init(struct nrf24 *nrf)
 	nrf24_init(nrf);
 
 	/* RF Speed and power*/
-	nrf24_set_byte(nrf, NRF24_RF_SETUP, NRF24_RF_DR_250K | NRF24_RF_PWR_M6);
+	nrf24_set_byte(nrf, NRF24_RF_SETUP, NRF24_RF_DR_250K | NRF24_RF_PWR_0);
 
 	/* Set to RX mode, 2-byte CRC */
 	val = nrf24_get_byte(nrf, NRF24_CONFIG);
